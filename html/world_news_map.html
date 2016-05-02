@@ -32,7 +32,7 @@
     <div class="col-md-8 col-md-offset-1">
       <form class="navbar-form">
         <!-- Post query input field and submit button -->
-        <input class="form-control" type="text" id="page_input" placeholder="{Facebook Page id}" onkeypress="return useridKeyPress(event);" size="20">
+        <input class="form-control" type="text" id="page_input" placeholder="{Facebook Page Name}" onkeypress="return useridKeyPress(event);" size="20">
         <input class="form-control form_datetime" type="text"  id="sinceDateField" value="Start date" size="12">
         <input class="form-control form_datetime" type="text"  id="untilDateField" value="End date" size="12">
         <button class="btn btn-default" type="button" id="submit" onclick="button_submit()"><i class="glyphicon glyphicon-search"></i></button>
@@ -181,10 +181,10 @@
             .text("Total posts: " +data.posts.data.length);
 
             var width = screen.width,
-                height = screen.height-50;
+                height = screen.height-140;
 
             var projection = d3.geo.miller()
-                .scale(200)
+                .scale(screen.width/10)
                 .translate([width / 2, height / 2])
                 .precision(.1);
 
