@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>World News Map</title>
+  <meta charset="utf-8">
+
+  <!--references if some js template-->
+  <link rel='stylesheet' href='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css' />
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/css/bootstrap-datepicker.min.css" rel="stylesheet" type="text/css" />
+  <link rel="stylesheet" href="css/world_map.css" />
+
+  <script src='https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js'></script>
+  <script src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js'></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datepicker/1.6.0/js/bootstrap-datepicker.min.js"></script>
+
+  <script type="text/javascript">
+  $(function () {
+    $('.form_datetime').datepicker({
+      format: 'yyyy-mm-dd'
+    });
+  });
+ </script>
+</head>
+
+<body>
+  <script src="//d3js.org/d3.v3.min.js"></script>
+  <script src="//d3js.org/d3.geo.projection.v0.min.js"></script>
+  <script src="//d3js.org/topojson.v1.min.js"></script>
+  <script src="//d3js.org/queue.v1.min.js"></script>
+  <!-- Navbar -->
+  <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+    <div class="col-md-8 col-md-offset-1">
+      <form class="navbar-form">
+        <!-- Post query input field and submit button -->
+        <input class="form-control" type="text" id="page_input" placeholder="{Facebook Page id}" onkeypress="return useridKeyPress(event);" size="20">
+        <input class="form-control form_datetime" type="text"  id="sinceDateField" value="Start date" size="12">
+        <input class="form-control form_datetime" type="text"  id="untilDateField" value="End date" size="12">
+        <button class="btn btn-default" type="button" id="submit" onclick="button_submit()"><i class="glyphicon glyphicon-search"></i></button>
+      </form>
+    </div>
+
+    <!-- Facebook authorization info and button -->
+    <div class="nav navbar-nav">
+      <button type="button" class="btn btn-link navrbar-btn" id="user-info" class="muted"></button>
+      <button type="button" class="btn btn-inverse navrbar-btn" id="fb-auth"></button>
+    </div>
+  </nav>
+
+  <div align="center">
+    <div id="loading_image"><img src="img/loading.gif" /></div>
+  </div>
+  <div id="page_info"></div>
+  <div id="post_info"></div>
+  <div id="fbmessage"></div>
+  <div id="startpage">
+    <p><br><br>
+    這是一個關於全球新聞粉絲團貼文的地理視覺化<br>
+    透過視覺化可觀察期間內各國家的新聞分布情形<br>
+    點選國家區塊則會顯示該國家相關的文章細節<br>
+    使用方式：輸入該粉絲團的name，以及時間區間後按下查詢按鈕即可<br>
+    以BBC為例：https://www.facebook.com/<font color="yellow">bbcnews</font>/?fref=nf，BBC的name即為<font color="yellow">bbcnews</font>
+    </p>
+  </div>
+  <div id="fbgraph" align="right"></div>
+  <div id="fb-root"></div>
+  <script src="fbOauthLogin.js"></script>
+
+  <script>
+
+    var since, until, sincedate, untildate;
+
+    function useridKeyPress(event) {
+
+      if (event.keyCode == 13) {
+        document.getElementById("submit").click();
+        return false;
+      }
+      return true;
+    }
+    function set_since_until(since,until)
+    {
+      var sinceyyyy = parseInt(since[0]);
+      var sincemm = parseInt(since[1])-1;
+      var sincedd = parseInt(since[2]);
+
+      var untilyyyy = parseInt(until[0]);
+      var untilmm = parseInt(until[1])-1;
+      var untildd = parseInt(until[2]);
+
+      sincedate = new Date(sinceyyyy,sincemm,sincedd);
+      untildate = new Date(untilyyyy,untilmm,untildd);
+      sincedate.setDate(sincedate.getDate()+1);
+      untildate.setDate(untildate.getDate()+1);
+
+      sincedate = sincedate.toISOString().slice(0, 10);
+      untildate = untildate.toISOString().slice(0, 10);
+    }
+
+    function button_submit() {
+
+      since = document.getElementById("sinceDateField").value.split("-");
+      until = document.getElementById("untilDateField").value.split("-");
+
+      set_since_until(since,until);
+
+      document.getElementById("startpage").innerHTML = "";
+      document.getElementById("page_info").innerHTML = "";
+      document.getElementById("post_info").innerHTML = "";
+      document.getElementById("fbmessage").innerHTML = "";
+
+      total_page_data = [];
+
+      d3.select("svg").remove();
+
+      document.getElementById("loading_image").style.display = "inline";
+
+      get_fb_data();
+    }
+
+    function get_fb_data() {
+
+      var fb_page_name = document.getElementById("page_input").value,
+          total_page_data = [],
+          the_nest;
+
+      FB.api(fb_page_name, function(res) {
+        if (!res.error) {
+
+          function queryPageInfo(pagename, tokens, sincedate, untildate) {
+
+            FB.api("/"+pagename+"?fields=id,name,posts.until("+untildate+").since("+sincedate+").limit(100){message,name,description}",
+              function(response) {
+                if (response.error) {
+                  console.log(response);
+                }
+
+                var first_data = response;
+
+                total_page_data.push(first_data);
+
+                if(first_data.posts.paging && first_data.posts.paging.next) {
+                  queryPagingnext(first_data.posts.paging.next.slice(32));
+                }
+              });
+          };
+          queryPageInfo(fb_page_name, ACCESS_TOKEN, sincedate, untildate);
+
+          function queryPagingnext(page_next) {
+            console.log("queryPagingnext function start!");
+
+            FB.api("/"+page_next,
+              function(response) {
+                if (response.error) {
+                  console.log(response);
+                }
+
+                var next_data = response;
+
+                for(var i=0; i<next_data.data.length; i++) {
+                  total_page_data[0].posts.data.push(next_data.data[i]);
+                }
+
+                if(next_data.paging && next_data.paging.next) {
+                  queryPagingnext(next_data.paging.next.slice(32));
+                } else {
+                  //console.log(total_page_data[0]);
+
+                  run_d3(total_page_data[0]);
+                  document.getElementById("loading_image").style.display = "none";
+                }
+            });
+          };
+
+          // start run d3.js
+          function run_d3(data) {
+
+            document.getElementById("page_info").innerHTML = "<span id=\"logo\"><img src=\"http://graph.facebook.com/"+data.id+"/picture\">&nbsp;&nbsp;"+data.name+"</span>";
+
+            d3.select("#post_info")
+            .append("p")
+            .text("Total posts: " +data.posts.data.length);
+
+            var width = screen.width,
+                height = screen.height-50;
+
+            var projection = d3.geo.miller()
+                .scale(200)
+                .translate([width / 2, height / 2])
+                .precision(.1);
+
+            var path = d3.geo.path()
+                .projection(projection);
+
+            var graticule = d3.geo.graticule();
+
+            var svg = d3.select("body").select("#fbgraph").append("svg")
+                .attr("width", width)
+                .attr("height", height);
+
+            svg.append("path")
+                .datum(graticule)
+                .attr("class", "graticule")
+                .attr("d", path);
+
+
+            queue()
+            .defer(d3.json, "world_map/world-110m.json")
+            .defer(d3.tsv, "world_map/world-110m-country-names.tsv")
+            .await(ready);
+
+            function ready(error, world, names) {
+
+              if (error) throw error;
+
+              var the_source = names;
+
+              the_nest = d3.nest().key(function(d){
+                return d.name;
+              })
+              .entries(the_source)
+
+              // 關鍵字比對(map_data.json中的key vs posts.data的message、name以及description)
+              for(var j=0; j<data.posts.data.length; j++) {
+                for(var i=0; i<the_nest.length; i++) {
+
+                  // 正規表示法：全域搜尋貼文中所有符合key的值
+                  var reg_key =  new RegExp(the_nest[i].key, "g");
+
+                  if(data.posts.data[j].message == undefined) {
+                    data.posts.data[j].message = "";
+                  }
+                  if(data.posts.data[j].name == undefined) {
+                    data.posts.data[j].name = "";
+                  }
+                  if(data.posts.data[j].description == undefined) {
+                    data.posts.data[j].description = "";
+                  }
+
+                  if(data.posts.data[j].message.match(the_nest[i].key)) {
+                    the_nest[i].values[0].value = parseInt(the_nest[i].values[0].value)+1;
+                    //the_nest[i].values[0].message.push(data.posts.data[j].message.replace(reg_key, "<font color=\"yellow\">"+the_nest[i].key+"</font>")+"  (message)");
+                  } else if(data.posts.data[j].name.match(the_nest[i].key)) {
+                    the_nest[i].values[0].value = parseInt(the_nest[i].values[0].value)+1;
+                    //the_nest[i].values[0].message.push(data.posts.data[j].name.replace(reg_key, "<font color=\"yellow\">"+the_nest[i].key+"</font>")+"  (name)");
+                  } else if(data.posts.data[j].description != undefined) {
+                    if(data.posts.data[j].description.match(the_nest[i].key)) {
+                      the_nest[i].values[0].value = parseInt(the_nest[i].values[0].value)+1;
+                      //the_nest[i].values[0].message.push(data.posts.data[j].description.replace(reg_key, "<font color=\"yellow\">"+the_nest[i].key+"</font>")+"  (description)");
+                    }
+                  }
+                }
+              }
+
+              var Counties_values = [];
+
+              for(var i=0; i<the_nest.length; i++) {
+                Counties_values.push(the_nest[i].values[0].value);
+              }
+
+              var color_scale = d3.scale.linear()
+              .domain([0, Math.max.apply(Math, Counties_values)])
+              .range([60, 255])
+
+              var countries = topojson.feature(world, world.objects.countries).features;
+
+              countries = countries.filter(function(d) {
+                return names.some(function(n) {
+                  if (d.id == n.id) {return d.name = n.name;}
+                });
+              }).filter(function(d) {
+                return names.some(function(n) {
+                  if (d.id == n.id) {return d.value = n.value;}
+                });
+              })
+              .sort(function(a, b) {
+                return a.name.localeCompare(b.name);
+              });
+
+
+              svg.selectAll(".country")
+              .data(countries)
+              .enter()
+              .insert("path", ".graticule")
+              .attr("class", "country")
+              .attr("d", path)
+              .style("fill", function(d, i) {
+                if(countries[i].value>=1) {
+                  return "rgb("+Math.round(color_scale(countries[i].value))+", 0, 0)";
+                } else {
+                  return "rgb(50, 50, 50)";
+                }
+              })
+              .on("mouseover", mouse_over)
+              .on("mouseout", mouse_out);
+
+              svg.insert("path", ".graticule")
+              .datum(topojson.mesh(world, world.objects.countries, function(a, b) { return a !== b; }))
+              .attr("class", "boundary")
+              .attr("d", path);
+
+              function mouse_over(d, i) {
+                fbmessage.innerHTML = countries[i].name+",    "+countries[i].value;
+              }
+
+              function mouse_out(d, i) {
+                fbmessage.innerHTML = "";
+              }
+            }
+
+            d3.select(self.frameElement).style("height", height + "px");
+          }
+        }
+      });
+    };
+  </script>
+</body>
+</html>
