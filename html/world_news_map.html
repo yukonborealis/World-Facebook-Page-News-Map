@@ -45,7 +45,6 @@
       <button type="button" class="btn btn-inverse navrbar-btn" id="fb-auth"></button>
     </div>
   </nav>
-
   <div align="center">
     <div id="loading_image"><img src="img/loading.gif" /></div>
   </div>
@@ -132,7 +131,7 @@
 
           function queryPageInfo(pagename, tokens, sincedate, untildate) {
 
-            FB.api("/"+pagename+"?fields=id,name,posts.until("+untildate+").since("+sincedate+").limit(100){created_time,message,name,description}",
+            FB.api("/"+pagename+"?fields=id,name,posts.until("+untildate+").since("+sincedate+").limit(100){id,picture,created_time,message,name,description}",
               function(response) {
                 if (response.error) {
                   console.log(response);
@@ -226,6 +225,8 @@
               for(var i=0; i<the_nest.length; i++) {
                 the_nest[i].values[0].message = [];
                 the_nest[i].values[0].time = [];
+                the_nest[i].values[0].picture = [];
+                the_nest[i].values[0].postid = [];
               }
 
               // 關鍵字比對(map_data.json中的key vs posts.data的message、name以及description)
@@ -247,17 +248,24 @@
 
                   if(data.posts.data[j].message.match(the_nest[i].values[0].name)) {
                     the_nest[i].values[0].value = parseInt(the_nest[i].values[0].value)+1;
+                    the_nest[i].values[0].postid.push(data.posts.data[j].id);
+                    the_nest[i].values[0].time.push(new Date(data.posts.data[j].created_time).toLocaleString());
+                    the_nest[i].values[0].picture.push(data.posts.data[j].picture);
                     the_nest[i].values[0].message.push(data.posts.data[j].message.replace(reg_key, "<font color=\"red\">"+the_nest[i].key+"</font>")+"  (message)")
+
                   } else if(data.posts.data[j].name.match(the_nest[i].values[0].name)) {
                     the_nest[i].values[0].value = parseInt(the_nest[i].values[0].value)+1;
+                    the_nest[i].values[0].postid.push(data.posts.data[j].id);
+                    the_nest[i].values[0].time.push(new Date(data.posts.data[j].created_time).toLocaleString());
+                    the_nest[i].values[0].picture.push(data.posts.data[j].picture);
                     the_nest[i].values[0].message.push(data.posts.data[j].name.replace(reg_key, "<font color=\"red\">"+the_nest[i].key+"</font>")+"  (name)");
+
                   } else if(data.posts.data[j].description.match(the_nest[i].values[0].name)) {
                     the_nest[i].values[0].value = parseInt(the_nest[i].values[0].value)+1;
-                    the_nest[i].values[0].message.push(data.posts.data[j].description.replace(reg_key, "<font color=\"red\">"+the_nest[i].key+"</font>")+"  (description)");
-                  }
-
-                  if(data.posts.data[j].created_time) {
+                    the_nest[i].values[0].postid.push(data.posts.data[j].id);
                     the_nest[i].values[0].time.push(new Date(data.posts.data[j].created_time).toLocaleString());
+                    the_nest[i].values[0].picture.push(data.posts.data[j].picture);
+                    the_nest[i].values[0].message.push(data.posts.data[j].description.replace(reg_key, "<font color=\"red\">"+the_nest[i].key+"</font>")+"  (description)");
                   }
                 }
               }
@@ -287,12 +295,24 @@
                   if (d.id == n.id) {return d.message = n.message;}
                 });
               })
+              .filter(function(d) {
+                return names.some(function(n) {
+                  if (d.id == n.id) {return d.time = n.time;}
+                });
+              })
+              .filter(function(d) {
+                return names.some(function(n) {
+                  if (d.id == n.id) {return d.picture = n.picture;}
+                });
+              })
+              .filter(function(d) {
+                return names.some(function(n) {
+                  if (d.id == n.id) {return d.postid = n.postid;}
+                });
+              })
               .sort(function(a, b) {
                 return a.name.localeCompare(b.name);
               });
-
-              console.log(countries)
-
 
               svg.selectAll(".country")
               .data(countries)
@@ -316,6 +336,8 @@
               .attr("class", "boundary")
               .attr("d", path);
 
+              console.log(countries)
+
               function mouse_click(d, i) {
 
                 fbmessage.innerHTML = "";
@@ -327,7 +349,11 @@
                   country_info.innerHTML = countries[i].name+"  ("+countries[i].value+")";
                   for(var j=0; j<countries[i].message.length; j++) {
                     //fbmessage.innerHTML += "<p>"+d.properties.name+" ("+(j+1)+") "+the_nest[i].values[0].time[j]+"<br>"+"</p>";
-                    fbmessage.innerHTML += "<br><td>"+the_nest[i].values[0].time[j]+"<br><br>"+countries[i].message[j]+"<br></td>";
+
+                    fbmessage.innerHTML +=
+                    "<td><img class=\"post_picture\" src=\""+countries[i].picture[j]+"\">"+
+                    "<a href = \"http://www.facebook.com/"+countries[i].postid[j]+"\" target=_blank>"+countries[i].time[j]+"</a><br><br>"+
+                    countries[i].message[j]+"<br></td>";
                   }
                 }
               }
