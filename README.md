@@ -5,7 +5,7 @@
 ## Demo
 Only English!
 
-<a href="http://140.119.164.168:3002/world_news_map.html">Here</a>
+<a href="http://140.119.164.166:3005/world_news_map.html">Here</a>
 
 ## server.js
 	Build a simple http server for tutorial
