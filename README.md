@@ -11,7 +11,7 @@ Only English!
 	Build a simple http server for tutorial
     $ node server.js
 
-## D3.js Taiwan map
+## D3.js World map (Miller projection)
 world_news_map.html
 
 	Facebook Page News visualization by map (only English)

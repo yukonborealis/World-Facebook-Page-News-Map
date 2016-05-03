@@ -1,175 +1,175 @@
-id	name	value
-4	Afghanistan	0
-8	Albania	0
-12	Algeria	0
-24	Angola	0
-10	Antarctica	0
-32	Argentina	0
-51	Armenia	0
-36	Australia	0
-40	Austria	0
-31	Azerbaijan	0
-44	Bahamas	0
-50	Bangladesh	0
-112	Belarus	0
-56	Belgium	0
-84	Belize	0
-204	Benin	0
-64	Bhutan	0
-68	Bolivia	0
-70	Bosnia	0
-72	Botswana	0
-76	Brazil	0
-96	Brunei	0
-100	Bulgaria	0
-854	Burkina	0
-108	Burundi	0
-116	Cambodia	0
-120	Cameroon	0
-124	Canada	0
-140	Central African Republic	0
-148	Chad	0
-152	Chile	0
-156	China	0
-170	Colombia	0
-178	Congo	0
-180	Congo	0
-188	Costa Rica	0
-384	Cote d'Ivoire	0
-191	Croatia	0
-192	Cuba	0
-196	Cyprus	0
-203	Czech	0
-208	Denmark	0
-262	Djibouti	0
-214	Dominican	0
-218	Ecuador	0
-818	Egypt	0
-222	Salvador	0
-226	Equatorial	0
-232	Eritrea	0
-233	Estonia	0
-231	Ethiopia	0
-238	Malvinas	0
-242	Fiji	0
-246	Finland	0
-250	France	0
-260	French Southern Territories	0
-266	Gabon	0
-270	Gambia	0
-268	Georgia	0
-276	Germany	0
-288	Ghana	0
-300	Greece	0
-304	Greenland	0
-320	Guatemala	0
-324	Guinea	0
-624	Guinea-Bissau	0
-328	Guyana	0
-332	Haiti	0
-340	Honduras	0
-348	Hungary	0
-352	Iceland	0
-356	India	0
-360	Indonesia	0
-364	Iran	0
-368	Iraq	0
-372	Ireland	0
-376	Israel	0
-380	Italy	0
-388	Jamaica	0
-392	Japan	0
-400	Jordan	0
-398	Kazakhstan	0
-404	Kenya	0
-408	Korea	0
-410	Korea	0
-414	Kuwait	0
-417	Kyrgyzstan	0
-418	Lao People's Democratic Republic	0
-428	Latvia	0
-422	Lebanon	0
-426	Lesotho	0
-430	Liberia	0
-434	Libya	0
-440	Lithuania	0
-442	Luxembourg	0
-807	Macedonia	0
-450	Madagascar	0
-454	Malawi	0
-458	Malaysia	0
-466	Mali	0
-478	Mauritania	0
-484	Mexico	0
-498	Moldova	0
-496	Mongolia	0
-499	Montenegro	0
-504	Morocco	0
-508	Mozambique	0
-104	Myanmar	0
-516	Namibia	0
-524	Nepal	0
-528	Netherlands	0
-540	New Caledonia	0
-554	Zealand	0
-558	Nicaragua	0
-562	Niger	0
-566	Nigeria	0
-578	Norway	0
-512	Oman	0
-586	Pakistan	0
-275	Palestinian Territory	0
-591	Panama	0
-598	Papua New Guinea	0
-600	Paraguay	0
-604	Peru	0
-608	Philippines	0
-616	Poland	0
-620	Portugal	0
-630	Puerto Rico	0
-634	Qatar	0
-642	Romania	0
-643	Russian	0
-646	Rwanda	0
-682	Saudi Arabia	0
-686	Senegal	0
-688	Serbia	0
-694	Sierra Leone	0
-703	Slovakia	0
-705	Slovenia	0
-90	Solomon Islands	0
-706	Somalia	0
-710	South Africa	0
-728	South Sudan	0
-724	Spain	0
-144	Sri Lanka	0
-729	Sudan	0
-740	Suriname	0
-748	Swaziland	0
-752	Sweden	0
-756	Switzerland	0
-760	Syrian Arab Republic	0
-158	Taiwan	0
-762	Tajikistan	0
-834	Tanzania	0
-764	Thailand	0
-626	Timor-Leste	0
-768	Togo	0
-780	Trinidad and Tobago	0
-788	Tunisia	0
-792	Turkey	0
-795	Turkmenistan	0
-800	Uganda	0
-804	Ukraine	0
-784	United Arab Emirates	0
-826	Britain	0
-840	America	0
-858	Uruguay	0
-860	Uzbekistan	0
-548	Vanuatu	0
-862	Venezuela	0
-704	Viet Nam	0
-732	Western Sahara	0
-887	Yemen	0
-894	Zambia	0
-716	Zimbabwe	0
+id	name	value	message
+4	Afghanistan	0	
+8	Albania	0	
+12	Algeria	0	
+24	Angola	0	
+10	Antarctica	0	
+32	Argentina	0	
+51	Armenia	0	
+36	Australia	0	
+40	Austria	0	
+31	Azerbaijan	0	
+44	Bahamas	0	
+50	Bangladesh	0	
+112	Belarus	0	
+56	Belgium	0	
+84	Belize	0	
+204	Benin	0	
+64	Bhutan	0	
+68	Bolivia	0	
+70	Bosnia	0	
+72	Botswana	0	
+76	Brazil	0	
+96	Brunei	0	
+100	Bulgaria	0	
+854	Burkina	0	
+108	Burundi	0	
+116	Cambodia	0	
+120	Cameroon	0	
+124	Canada	0	
+140	Central African Republic	0	
+148	Chad	0	
+152	Chile	0	
+156	China	0	
+170	Colombia	0	
+178	Congo	0	
+180	Congo	0	
+188	Costa Rica	0	
+384	Cote d'Ivoire	0	
+191	Croatia	0	
+192	Cuba	0	
+196	Cyprus	0	
+203	Czech	0	
+208	Denmark	0	
+262	Djibouti	0	
+214	Dominican	0	
+218	Ecuador	0	
+818	Egypt	0	
+222	Salvador	0	
+226	Equatorial	0	
+232	Eritrea	0	
+233	Estonia	0	
+231	Ethiopia	0	
+238	Malvinas	0	
+242	Fiji	0	
+246	Finland	0	
+250	France	0	
+260	French Southern Territories	0	
+266	Gabon	0	
+270	Gambia	0	
+268	Georgia	0	
+276	Germany	0	
+288	Ghana	0	
+300	Greece	0	
+304	Greenland	0	
+320	Guatemala	0	
+324	Guinea	0	
+624	Guinea-Bissau	0	
+328	Guyana	0	
+332	Haiti	0	
+340	Honduras	0	
+348	Hungary	0	
+352	Iceland	0	
+356	India	0	
+360	Indonesia	0	
+364	Iran	0	
+368	Iraq	0	
+372	Ireland	0	
+376	Israel	0	
+380	Italy	0	
+388	Jamaica	0	
+392	Japan	0	
+400	Jordan	0	
+398	Kazakhstan	0	
+404	Kenya	0	
+408	Korea	0	
+410	Korea	0	
+414	Kuwait	0	
+417	Kyrgyzstan	0	
+418	Lao People's Democratic Republic	0	
+428	Latvia	0	
+422	Lebanon	0	
+426	Lesotho	0	
+430	Liberia	0	
+434	Libya	0	
+440	Lithuania	0	
+442	Luxembourg	0	
+807	Macedonia	0	
+450	Madagascar	0	
+454	Malawi	0	
+458	Malaysia	0	
+466	Mali	0	
+478	Mauritania	0	
+484	Mexico	0	
+498	Moldova	0	
+496	Mongolia	0	
+499	Montenegro	0	
+504	Morocco	0	
+508	Mozambique	0	
+104	Myanmar	0	
+516	Namibia	0	
+524	Nepal	0	
+528	Netherlands	0	
+540	New Caledonia	0	
+554	Zealand	0	
+558	Nicaragua	0	
+562	Niger	0	
+566	Nigeria	0	
+578	Norway	0	
+512	Oman	0	
+586	Pakistan	0	
+275	Palestinian Territory	0	
+591	Panama	0	
+598	Papua New Guinea	0	
+600	Paraguay	0	
+604	Peru	0	
+608	Philippines	0	
+616	Poland	0	
+620	Portugal	0	
+630	Puerto Rico	0	
+634	Qatar	0	
+642	Romania	0	
+643	Russian	0	
+646	Rwanda	0	
+682	Saudi Arabia	0	
+686	Senegal	0	
+688	Serbia	0	
+694	Sierra Leone	0	
+703	Slovakia	0	
+705	Slovenia	0	
+90	Solomon Islands	0	
+706	Somalia	0	
+710	South Africa	0	
+728	South Sudan	0	
+724	Spain	0	
+144	Sri Lanka	0	
+729	Sudan	0	
+740	Suriname	0	
+748	Swaziland	0	
+752	Sweden	0	
+756	Switzerland	0	
+760	Syrian Arab Republic	0	
+158	Taiwan	0	
+762	Tajikistan	0	
+834	Tanzania	0	
+764	Thailand	0	
+626	Timor-Leste	0	
+768	Togo	0	
+780	Trinidad and Tobago	0	
+788	Tunisia	0	
+792	Turkey	0	
+795	Turkmenistan	0	
+800	Uganda	0	
+804	Ukraine	0	
+784	United Arab Emirates	0	
+826	Britain	0	
+840	America	0	
+858	Uruguay	0	
+860	Uzbekistan	0	
+548	Vanuatu	0	
+862	Venezuela	0	
+704	Viet Nam	0	
+732	Western Sahara	0	
+887	Yemen	0	
+894	Zambia	0	
+716	Zimbabwe	0	
