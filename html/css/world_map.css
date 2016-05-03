@@ -45,10 +45,11 @@ body {
 #country_info {
   position: absolute;
   top: 180px;
-  left: 39%;
+  width: 100%;
   color: white;
   font-size: 16px;
   z-index: 2;
+  text-align: center;
 }
 #fbgraph {
   position: fixed;
