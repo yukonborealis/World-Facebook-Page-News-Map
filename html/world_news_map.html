@@ -32,7 +32,7 @@
     <div class="col-md-8 col-md-offset-1">
       <form class="navbar-form">
         <!-- Post query input field and submit button -->
-        <input class="form-control" type="text" id="page_input" placeholder="{Facebook Page id}" onkeypress="return useridKeyPress(event);" size="20">
+        <input class="form-control" type="text" id="page_input" placeholder="{Facebook Page Name}" onkeypress="return useridKeyPress(event);" size="20">
         <input class="form-control form_datetime" type="text"  id="sinceDateField" value="Start date" size="12">
         <input class="form-control form_datetime" type="text"  id="untilDateField" value="End date" size="12">
         <button class="btn btn-default" type="button" id="submit" onclick="button_submit()"><i class="glyphicon glyphicon-search"></i></button>
@@ -49,9 +49,12 @@
   <div align="center">
     <div id="loading_image"><img src="img/loading.gif" /></div>
   </div>
-  <div id="page_info"></div>
-  <div id="post_info"></div>
-  <div id="fbmessage"></div>
+  <div id="basic_info">
+    <div id="page_info"></div>
+    <div id="post_info"></div>
+    <div id="country_info"></div>
+  </div>
+  <table class="table" id="fbmessage"></table>
   <div id="startpage">
     <p><br><br>
     這是一個關於全球新聞粉絲團貼文的地理視覺化<br>
@@ -107,6 +110,7 @@
       document.getElementById("page_info").innerHTML = "";
       document.getElementById("post_info").innerHTML = "";
       document.getElementById("fbmessage").innerHTML = "";
+      document.getElementById("country_info").innerHTML = "";
 
       total_page_data = [];
 
@@ -128,7 +132,7 @@
 
           function queryPageInfo(pagename, tokens, sincedate, untildate) {
 
-            FB.api("/"+pagename+"?fields=id,name,posts.until("+untildate+").since("+sincedate+").limit(100){message,name,description}",
+            FB.api("/"+pagename+"?fields=id,name,posts.until("+untildate+").since("+sincedate+").limit(100){created_time,message,name,description}",
               function(response) {
                 if (response.error) {
                   console.log(response);
@@ -181,11 +185,11 @@
             .text("Total posts: " +data.posts.data.length);
 
             var width = screen.width,
-                height = screen.height-50;
+                height = screen.height-140;
 
             var projection = d3.geo.miller()
-                .scale(200)
-                .translate([width / 2, height / 2])
+                .scale(screen.width/10)
+                .translate([width / 2+250, height / 2])
                 .precision(.1);
 
             var path = d3.geo.path()
@@ -219,6 +223,11 @@
               })
               .entries(the_source)
 
+              for(var i=0; i<the_nest.length; i++) {
+                the_nest[i].values[0].message = [];
+                the_nest[i].values[0].time = [];
+              }
+
               // 關鍵字比對(map_data.json中的key vs posts.data的message、name以及description)
               for(var j=0; j<data.posts.data.length; j++) {
                 for(var i=0; i<the_nest.length; i++) {
@@ -236,17 +245,19 @@
                     data.posts.data[j].description = "";
                   }
 
-                  if(data.posts.data[j].message.match(the_nest[i].key)) {
+                  if(data.posts.data[j].message.match(the_nest[i].values[0].name)) {
                     the_nest[i].values[0].value = parseInt(the_nest[i].values[0].value)+1;
-                    //the_nest[i].values[0].message.push(data.posts.data[j].message.replace(reg_key, "<font color=\"yellow\">"+the_nest[i].key+"</font>")+"  (message)");
-                  } else if(data.posts.data[j].name.match(the_nest[i].key)) {
+                    the_nest[i].values[0].message.push(data.posts.data[j].message.replace(reg_key, "<font color=\"red\">"+the_nest[i].key+"</font>")+"  (message)")
+                  } else if(data.posts.data[j].name.match(the_nest[i].values[0].name)) {
                     the_nest[i].values[0].value = parseInt(the_nest[i].values[0].value)+1;
-                    //the_nest[i].values[0].message.push(data.posts.data[j].name.replace(reg_key, "<font color=\"yellow\">"+the_nest[i].key+"</font>")+"  (name)");
-                  } else if(data.posts.data[j].description != undefined) {
-                    if(data.posts.data[j].description.match(the_nest[i].key)) {
-                      the_nest[i].values[0].value = parseInt(the_nest[i].values[0].value)+1;
-                      //the_nest[i].values[0].message.push(data.posts.data[j].description.replace(reg_key, "<font color=\"yellow\">"+the_nest[i].key+"</font>")+"  (description)");
-                    }
+                    the_nest[i].values[0].message.push(data.posts.data[j].name.replace(reg_key, "<font color=\"red\">"+the_nest[i].key+"</font>")+"  (name)");
+                  } else if(data.posts.data[j].description.match(the_nest[i].values[0].name)) {
+                    the_nest[i].values[0].value = parseInt(the_nest[i].values[0].value)+1;
+                    the_nest[i].values[0].message.push(data.posts.data[j].description.replace(reg_key, "<font color=\"red\">"+the_nest[i].key+"</font>")+"  (description)");
+                  }
+
+                  if(data.posts.data[j].created_time) {
+                    the_nest[i].values[0].time.push(new Date(data.posts.data[j].created_time).toLocaleString());
                   }
                 }
               }
@@ -271,10 +282,16 @@
                 return names.some(function(n) {
                   if (d.id == n.id) {return d.value = n.value;}
                 });
+              }).filter(function(d) {
+                return names.some(function(n) {
+                  if (d.id == n.id) {return d.message = n.message;}
+                });
               })
               .sort(function(a, b) {
                 return a.name.localeCompare(b.name);
               });
+
+              console.log(countries)
 
 
               svg.selectAll(".country")
@@ -290,6 +307,7 @@
                   return "rgb(50, 50, 50)";
                 }
               })
+              .on("click", mouse_click)
               .on("mouseover", mouse_over)
               .on("mouseout", mouse_out);
 
@@ -298,12 +316,38 @@
               .attr("class", "boundary")
               .attr("d", path);
 
+              function mouse_click(d, i) {
+
+                fbmessage.innerHTML = "";
+                country_info.innerHTML = "";
+
+                if(countries[i].message.length === 0) {
+                  country_info.innerHTML = "No post about <font color=\"red\">"+countries[i].name+"</font>";
+                } else {
+                  country_info.innerHTML = countries[i].name+"  ("+countries[i].value+")";
+                  for(var j=0; j<countries[i].message.length; j++) {
+                    //fbmessage.innerHTML += "<p>"+d.properties.name+" ("+(j+1)+") "+the_nest[i].values[0].time[j]+"<br>"+"</p>";
+                    fbmessage.innerHTML += "<br><td>"+the_nest[i].values[0].time[j]+"<br><br>"+countries[i].message[j]+"<br></td>";
+                  }
+                }
+              }
+
               function mouse_over(d, i) {
-                fbmessage.innerHTML = countries[i].name+",    "+countries[i].value;
+                d3.select(this)
+                  .style("fill", "gold");
               }
 
               function mouse_out(d, i) {
-                fbmessage.innerHTML = "";
+                //fbmessage.innerHTML = "";
+
+                svg.selectAll(".country")
+                .style("fill", function(d, i) {
+                  if(countries[i].value>=1) {
+                    return "rgb("+Math.round(color_scale(countries[i].value))+", 0, 0)";
+                  } else {
+                    return "rgb(50, 50, 50)";
+                  }
+                })
               }
             }
 
