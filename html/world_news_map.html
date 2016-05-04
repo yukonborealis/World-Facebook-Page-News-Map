@@ -336,8 +336,6 @@
               .attr("class", "boundary")
               .attr("d", path);
 
-              console.log(countries)
-
               function mouse_click(d, i) {
 
                 fbmessage.innerHTML = "";
@@ -346,7 +344,7 @@
                 if(countries[i].message.length === 0) {
                   country_info.innerHTML = "No post about <font color=\"red\">"+countries[i].name+"</font>";
                 } else {
-                  country_info.innerHTML = countries[i].name+"  ("+countries[i].value+")";
+                  country_info.innerHTML = countries[i].name+": "+countries[i].value+" posts";
                   for(var j=0; j<countries[i].message.length; j++) {
                     //fbmessage.innerHTML += "<p>"+d.properties.name+" ("+(j+1)+") "+the_nest[i].values[0].time[j]+"<br>"+"</p>";
 

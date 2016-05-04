@@ -61,6 +61,9 @@ body {
   font-size: 12px;
   z-index: 1;
 }
+#fbmessage tbody {
+  border: 2px solid #111111;
+}
 .post_picture {
   width: 100px;
   height: 100px;
