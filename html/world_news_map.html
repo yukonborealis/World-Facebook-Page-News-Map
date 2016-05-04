@@ -180,8 +180,8 @@
             document.getElementById("page_info").innerHTML = "<span id=\"logo\"><img src=\"http://graph.facebook.com/"+data.id+"/picture\">&nbsp;&nbsp;"+data.name+"</span>";
 
             d3.select("#post_info")
-            .append("p")
-            .text("Total posts: " +data.posts.data.length);
+              .append("p")
+              .text("Total posts: " +data.posts.data.length);
 
             var width = screen.width,
                 height = screen.height-140;
@@ -204,7 +204,6 @@
                 .datum(graticule)
                 .attr("class", "graticule")
                 .attr("d", path);
-
 
             queue()
             .defer(d3.json, "world_map/world-110m.json")
@@ -346,7 +345,6 @@
                 } else {
                   country_info.innerHTML = countries[i].name+": "+countries[i].value+" posts";
                   for(var j=0; j<countries[i].message.length; j++) {
-                    //fbmessage.innerHTML += "<p>"+d.properties.name+" ("+(j+1)+") "+the_nest[i].values[0].time[j]+"<br>"+"</p>";
 
                     fbmessage.innerHTML +=
                     "<td><img class=\"post_picture\" src=\""+countries[i].picture[j]+"\">"+
@@ -362,8 +360,6 @@
               }
 
               function mouse_out(d, i) {
-                //fbmessage.innerHTML = "";
-
                 svg.selectAll(".country")
                 .style("fill", function(d, i) {
                   if(countries[i].value>=1) {
@@ -374,7 +370,6 @@
                 })
               }
             }
-
             d3.select(self.frameElement).style("height", height + "px");
           }
         }
